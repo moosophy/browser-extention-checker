@@ -1,4 +1,4 @@
-# Browser Extension Checker
+# Browser Extension Checker -- Prava
 
 A terminal application for analyzing browser extensions and detecting potentially malicious behavior.
 
