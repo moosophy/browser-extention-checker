@@ -18,6 +18,20 @@ A terminal application for analyzing browser extensions and detecting potentiall
 - **Input Access Auditing**
 
 ---
+1. **cookie theft detection**
+
+    create a python script that will analyze all JavaScript files in a browser extension and search for attempts to access browser cookies.
+
+2. **eval() detection**
+
+    write a python script that scans for dangerous JavaScript function eval(), which is known for enabling arbitrary code execution.
+
+3. **suspicious event listener detection**
+
+    create a python script that will analyze all JavaScript files for suspicious or excessive use of event listeners—especially ones that hook into sensitive input fields or system-wide events
+
+
+
 
 ## **Tools**:
 
