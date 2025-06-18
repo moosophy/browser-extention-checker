@@ -18,7 +18,7 @@ A terminal application for analyzing browser extensions and detecting potentiall
 - **Input Access Auditing**
 
 ---
-1. [**cookie theft detection**] (cookie_theft_detection.py)
+1. [**cookie theft detection**](cookie_theft_detection.py)
 
     create a python script that will analyze all JavaScript files in a browser extension and search for attempts to access browser cookies.
 
