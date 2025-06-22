@@ -58,7 +58,6 @@ def checkFile(path, filename):
         if found_keywords:
             print(f"{found_keywords} found in the file {file_path}!\n")
 
-
         #Cheking for fingerprinting
         count = 0
         for pattern in fingerprint_patterns:
@@ -67,16 +66,22 @@ def checkFile(path, filename):
         if count > 3:
             print ("This extension collects a broad range of device and browser details, " \
             "which may be used for tracking.")
+
+        #-------------------------- PERMISSIONS --------------------------------
+        #Checking if it uses fileSystemProvider
+        if filename == "manifest.json" and "fileSystemProvider" in content:
+            print(f"This file uses fileSystemProvider: {file_path}")
+            print("This extension deals with remote files, make sure to use" \
+            " it causiously .")
+        
+        #Checking if it uses gcm
+        if filename == "manifest.json" and "gcm" in content:
+            print(f"This file uses GCM: {file_path}")
+            print("This extension is can receive remote commands from an external server " \
+            "using Google's push messaging system (GCM). If the extension is not clearly advertized " \
+            "to provide real-time updates or messages, this is hightly suspicious.")
         
 
-        #----------------------- PERMISSIONS -----------------------------------
-        #Checking if it uses VPN
-        if filename == "manifest.json" and "vpnProvider" in content:
-            print(f"This file uses VPN: {file_path}")
-            print("If this extension is not advertized as a VPN provider and does not come" \
-            " from a trusted source, this is highly suspicious.")
-        
-        
         
 
 
