@@ -4,6 +4,22 @@ import re
 #dangerous keywords to look for:
 file_access_keywords = ["FileReader", "readAsText", "readAsDataURL", "readAsBinaryString",
                          "readAsArrayBuffer", "fetch("]
+fingerprint_patterns = [
+    r"getImageData\s*\(",
+    r"toDataURL\s*\(",
+    r"AudioContext",
+    r"OscillatorNode",
+    r"getFloatFrequencyData",
+    r"navigator\.hardwareConcurrency",
+    r"navigator\.deviceMemory",
+    r"navigator\.plugins",
+    r"navigator\.languages",
+    r"screen\.(width|height)",
+    r"chrome\.processes\.getProcessIdForTab\s*\(",
+    r"chrome\.processes\.getProcessInfo\s*\(",
+    r"chrome\.processes\.terminate\s*\(",
+    r"chrome\.processes\b"
+]
 
 
 def main():
@@ -43,12 +59,24 @@ def checkFile(path, filename):
             print(f"{found_keywords} found in the file {file_path}!\n")
 
 
+        #Cheking for fingerprinting
+        count = 0
+        for pattern in fingerprint_patterns:
+            if re.search(pattern, content):
+                count+=1
+        if count > 3:
+            print ("This extension collects a broad range of device and browser details, " \
+            "which may be used for tracking.")
+        
+
         #----------------------- PERMISSIONS -----------------------------------
         #Checking if it uses VPN
         if filename == "manifest.json" and "vpnProvider" in content:
             print(f"This file uses VPN: {file_path}")
             print("If this extension is not advertized as a VPN provider and does not come" \
             " from a trusted source, this is highly suspicious.")
+        
+        
         
 
 
