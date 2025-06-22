@@ -20,16 +20,15 @@ fingerprint_patterns = [
     r"chrome\.processes\.terminate\s*\(",
     r"chrome\.processes\b"
 ]
+found_fingerprint = set()
 
-
-def main():
-    print("-"*50)
-    print("Parsing files...\n")
-
-    scanFolder(sys.argv[1])
-
-    print("\nParsing finished.")
-    print("-"*50)
+# flags for malicious activities
+flags = {
+    "file_reading": False,
+    "fingerprint": False,
+    "fileSystemProvider_use": False,
+    "gcm_use": False,
+}
 
 
 
@@ -56,33 +55,67 @@ def checkFile(path, filename):
         content = f.read()
         found_keywords = [keyword for keyword in file_access_keywords if keyword in content]
         if found_keywords:
-            print(f"{found_keywords} found in the file {file_path}!\n")
+            flags["file_reading"] = True
+            # print(f"{found_keywords} found in the file {file_path}!\n")
+
 
         #Cheking for fingerprinting
         count = 0
         for pattern in fingerprint_patterns:
             if re.search(pattern, content):
                 count+=1
+                found_fingerprint.add(pattern)
         if count > 3:
-            print ("This extension collects a broad range of device and browser details, " \
-            "which may be used for tracking.")
+            flags["fingerprint"] = True
+            
 
         #-------------------------- PERMISSIONS --------------------------------
         #Checking if it uses fileSystemProvider
         if filename == "manifest.json" and "fileSystemProvider" in content:
-            print(f"This file uses fileSystemProvider: {file_path}")
-            print("This extension deals with remote files, make sure to use" \
-            " it causiously .")
-        
+            flags["fileSystemProvider_use"] = True
+            # print(f"This file uses fileSystemProvider: {file_path}")
+            
         #Checking if it uses gcm
         if filename == "manifest.json" and "gcm" in content:
-            print(f"This file uses GCM: {file_path}")
-            print("This extension is can receive remote commands from an external server " \
+            flags["gcm_use"] = True
+            # print(f"This file uses GCM: {file_path}")
+            
+        
+
+def reportMalicious():
+    if flags["gcm_use"] == True:
+        print("\n‣ This extension is can receive remote commands from an external server " \
             "using Google's push messaging system (GCM). If the extension is not clearly advertized " \
             "to provide real-time updates or messages, this is hightly suspicious.")
         
-
+    if flags["fileSystemProvider_use"] == True:
+        print("\n‣ This extension deals with remote files, make sure to use" \
+                " it causiously .")
         
+    if flags["fingerprint"] == True:
+        print (f"\n‣ This extension collects a broad range of device and browser details, " \
+            f"which may be used for tracking. \n\tThe details collected are: \n {found_fingerprint}")
+
+    
+    if flags["file_reading"] == True:
+        print ("\n‣ This extencion can read submitted files! Do not expose any sensitive information on them.")
+        
+
+
+
+def main():
+    print("\nParsing files...")
+
+    scanFolder(sys.argv[1])
+
+    print("Parsing finished.\n")
+    print("-"*50 + "\n")
+    print("RESULTS:")
+
+    reportMalicious()
+
+    print("\n" + "-"*50)
+
 
 
 
