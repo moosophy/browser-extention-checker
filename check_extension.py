@@ -41,9 +41,9 @@ other_flags = defaultdict(bool)
 
 def scan_folder(directory):
     """Recursively scan directory for .js and .json files."""
-    valid_extensions = ('.js', '.json')
+    valid_extensions = ('.js', '.json', '.html')
     
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for filename in files:
             if filename.endswith(valid_extensions):
                 check_file(root, filename)
