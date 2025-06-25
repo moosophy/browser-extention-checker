@@ -6,7 +6,7 @@ from patterns_and_keywords import *
 
 found_fingerprint = set()
 
-# Mapping of permission keywords to flag names - more maintainable
+# Mapping of permission keywords to flag names
 PERMISSION_MAPPING = {
     "fileSystemProvider": "fileSystemProvider_use",
     "gcm": "gcm_use",
